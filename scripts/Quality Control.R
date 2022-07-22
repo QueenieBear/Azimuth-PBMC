@@ -187,7 +187,7 @@ ggplot(bcmvn_PBMC,aes(pK,BCmetric,group=1))+
   theme(axis.text.x=element_text(angle = 45))
 
 pK<-bcmvn_PBMC %>%
-  filter(BCmetric == max(BCmetric)) %>%
+  dplyr::filter(BCmetric == max(BCmetric)) %>%
   select(pK)
 
 pK<-as.numeric(as.character(pK[[1]]))
@@ -222,7 +222,36 @@ filtered_PBMC1
 filtered_PBMC.singlets
 DimPlot(filtered_PBMC.singlets,reduction = "umap")
 
-saveRDS(filtered_PBMC.singlets, "metadata/filtered_PBMC_singlets.rds")
+saveRDS(filtered_PBMC.singlets, "metadata/filtered_PBMC_singlets_withoutregression.rds")
+
+# featureplot the second density peak
+metadata_clean <- filtered_PBMC.singlets@meta.data
+metadata_clean %>% 
+  ggplot(aes(color=seq_folder, x=nGene, fill= seq_folder)) + 
+  geom_density(alpha = 0.2) + 
+  theme_classic() +
+  scale_x_log10() + 
+  geom_vline(xintercept = c(200,2580,max_nGene),linetype="dashed")
+
+FeaturePlot(pbmc, 
+            reduction = "umap", 
+            features ="G2M.Score", 
+            sort.cell = TRUE,
+            min.cutoff = 'q10', 
+            label = F)
+
+pbmc4<-pbmc1
+pbmc4<-subset(pbmc4,subset=(nGene>2580))
+pdf("fig/pbmc_UMAP_secondpeak.pdf",width = 10,height =7)
+DimPlot(pbmc4, reduction = "umap",  cols = c(brewer.pal(5, "Reds")[1:5],brewer.pal(4, "Blues")[1:4],brewer.pal(7, "Greens")[2:3],brewer.pal(7, "Greens")[6:7], brewer.pal(3, "Purples")[2:3], brewer.pal(9, "Oranges")[c(4,6,8)],brewer.pal(8, "Dark2")[c(2,4,8)]),
+        label = TRUE,label.size = 2,repel = TRUE)
+dev.off()
+
+
+# vlnplot of cell type and phase number
+VlnPlot(pbmc1, features = c("mitoRatio"),pt.size = 0)
+
+
 
 
 

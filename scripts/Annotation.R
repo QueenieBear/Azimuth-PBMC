@@ -25,7 +25,7 @@ HIVpaper<-c("CD3D","CD4","CCR7","SELL","TCF7","LEF1","S100A4","GPR183","TNFRSF4"
 #annotation by marker genes
 FeaturePlot(pbmc, 
             reduction = "umap", 
-            features ="CD8B", 
+            features =HIVpaper[28:36], 
             sort.cell = TRUE,
             min.cutoff = 'q10', 
             label = F)
@@ -219,5 +219,20 @@ levels(pbmc1$SCT_snn_res.4.5)
 pbmc1$active.ident<-factor(pbmc1@active.ident,levels=c("CD4 Naive","CD4 TCM","CD4 TEM","Treg","CD4 TEFF","CD8 Naive","CD8 TEM","CD8 TEFF","MAIT","NKT","XCL1 NK","NK","NK Proliferating","Naive B","Memory B","CD14 Mono","CD16 Mono","mDC","pDC","MGK","HSPC"))
 saveRDS(pbmc1,"metadata/pbmc1.rds")
 
+pbmc2$active.ident<-factor(pbmc2@active.ident,levels=c("CD4 Naive","CD4 TCM","CD4 TEM","Treg","CD4 TEFF","CD8 Naive","CD8 TCM","CD8 TEM","CD8 TEFF","MAIT","gdT","XCL1 NK","NK","NK Proliferating","Naive B","Memory B","CD14 Mono","CD16 Mono","mDC","pDC","MGK","HSPC"))
+saveRDS(pbmc2,"metadata/pbmc2.rds")
+
 AzimuthResults <- read_csv("metadata/AzimuthResults.csv")
+
+
+#without cc genes regression
+FeaturePlot(pbmc_noReg,features = "S.Score")
+
+
+
+
+
+
+
+
 
